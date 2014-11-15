@@ -1,0 +1,28 @@
+
+
+#Dataset structure
+
+str(dtTidy)
+
+#List the key variables in the data table
+
+key(dtTidy)
+
+#Show a few rows of the dataset
+
+dtTidy
+
+#Summary of variables
+
+summary(dtTidy)
+
+#List all possible combinations of features
+
+dtTidy[, .N, by=c(names(dtTidy)[grep("^feat", names(dtTidy))])]
+
+#Save to file
+
+#Save data table objects to a tab-delimited text file called #DatasetHumanActivityRecognitionUsingSmartphones.txt.
+
+f <- file.path(path, "DatasetHumanActivityRecognitionUsingSmartphones.txt")
+write.table(dtTidy, f, quote=FALSE, sep="\t", row.names=FALSE)

@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>data.table reshape2</title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1265.21">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p2 {margin: 0.0px 0.0px 13.0px 0.0px; line-height: 20.0px; font: 13.0px Helvetica}
+    span.s1 {text-decoration: underline ; color: #0000ee}
+    span.s2 {font: 11.0px Helvetica}
+  </style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p2">#Preliminaries</p>
+<p class="p2">#Load packages.</p>
+<p class="p2">packages &lt;- c(“data.table”, “reshape2”) sapply(packages, require, character.only = TRUE, quietly = TRUE)</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>data.table reshape2</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>TRUE TRUE</b></h2>
+<p class="p2">#Set path.</p>
+<p class="p2">path &lt;- getwd() path</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[1] “C:/Users/chanb/Documents/Repositories/Coursera/GettingAndCleaningData/Project”</b></h2>
+<p class="p2">#Get the data</p>
+<p class="p2">#Download the file. Put it in the Data folder. This was already done on 2014-04-11; save time and don't evaluate again.</p>
+<p class="p2">url &lt;- “<a href="https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"><span class="s1">https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip</span></a>” f &lt;- “Dataset.zip” if (!file.exists(path)) { dir.create(path) } download.file(url, file.path(path, f))</p>
+<p class="p2">#Unzip the file. This was already done on 2014-04-11; save time and don't evaluate again.</p>
+<p class="p2">executable &lt;- file.path(“C:”, “Program Files (x86)”, “7-Zip”, “7z.exe”) parameters &lt;- “x” cmd &lt;- paste(paste0(“\”“, executable, ”\“”), parameters, paste0(“\”“, file.path(path, f), ”\“”)) system(cmd)</p>
+<p class="p2">#The archive put the files in a folder named UCI HAR Dataset. Set this folder as the input path. List the files here.</p>
+<p class="p2">pathIn &lt;- file.path(path, “UCI HAR Dataset”) list.files(pathIn, recursive = TRUE)</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[1] “activity_labels.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[2] “features.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[3] “features_info.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[4] “README.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[5] “test/Inertial Signals/body_acc_x_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[6] “test/Inertial Signals/body_acc_y_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[7] “test/Inertial Signals/body_acc_z_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[8] “test/Inertial Signals/body_gyro_x_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[9] “test/Inertial Signals/body_gyro_y_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[10] “test/Inertial Signals/body_gyro_z_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[11] “test/Inertial Signals/total_acc_x_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[12] “test/Inertial Signals/total_acc_y_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[13] “test/Inertial Signals/total_acc_z_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[14] “test/subject_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[15] “test/X_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[16] “test/y_test.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[17] “train/Inertial Signals/body_acc_x_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[18] “train/Inertial Signals/body_acc_y_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[19] “train/Inertial Signals/body_acc_z_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[20] “train/Inertial Signals/body_gyro_x_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[21] “train/Inertial Signals/body_gyro_y_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[22] “train/Inertial Signals/body_gyro_z_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[23] “train/Inertial Signals/total_acc_x_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[24] “train/Inertial Signals/total_acc_y_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[25] “train/Inertial Signals/total_acc_z_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[26] “train/subject_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[27] “train/X_train.txt”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[28] “train/y_train.txt”</b></h2>
+<p class="p2">#See the README.txt file in C:/Users/chanb/Documents/Repositories/Coursera/GettingAndCleaningData/Project for detailed information on the dataset.</p>
+<p class="p2">#For the purposes of this project, the files in the Inertial Signals folders are not used. #Read the files</p>
+<p class="p2">#Read the subject files.</p>
+<p class="p2">dtSubjectTrain &lt;- fread(file.path(pathIn, “train”, “subject_train.txt”)) dtSubjectTest &lt;- fread(file.path(pathIn, “test”, “subject_test.txt”))</p>
+<p class="p2">#Read the activity files. For some reason, these are called label files in the README.txt documentation.</p>
+<p class="p2">dtActivityTrain &lt;- fread(file.path(pathIn, “train”, “Y_train.txt”)) dtActivityTest &lt;- fread(file.path(pathIn, “test”, “Y_test.txt”))</p>
+<p class="p2">#Read the data files. fread seems to be giving me some trouble reading files. Using a helper function, read the file with read.table instead, then convert the #resulting #data frame to a data table. Return the data table.</p>
+<p class="p2">fileToDataTable &lt;- function(f) { df &lt;- read.table(f) dt &lt;- data.table(df) } dtTrain &lt;- fileToDataTable(file.path(pathIn, “train”, “X_train.txt”)) dtTest &lt;- fileToDataTable(file.path(pathIn, “test”, “X_test.txt”))</p>
+<p class="p2">#Merge the training and the test sets</p>
+<p class="p2">#Concatenate the data tables.</p>
+<p class="p2">dtSubject &lt;- rbind(dtSubjectTrain, dtSubjectTest) setnames(dtSubject, “V1”, “subject”) dtActivity &lt;- rbind(dtActivityTrain, dtActivityTest) setnames(dtActivity, “V1”, “activityNum”) dt &lt;- rbind(dtTrain, dtTest)</p>
+<p class="p2">#Merge columns.</p>
+<p class="p2">dtSubject &lt;- cbind(dtSubject, dtActivity) dt &lt;- cbind(dtSubject, dt)</p>
+<p class="p2">#Set key.</p>
+<p class="p2">setkey(dt, subject, activityNum)</p>
+<p class="p2">#Extract only the mean and standard deviation</p>
+<p class="p2">#Read the features.txt file. This tells which variables in dt are measurements for the mean and standard deviation.</p>
+<p class="p2">dtFeatures &lt;- fread(file.path(pathIn, “features.txt”)) setnames(dtFeatures, names(dtFeatures), c(“featureNum”, “featureName”))</p>
+<p class="p2">#Subset only measurements for the mean and standard deviation.</p>
+<p class="p2">dtFeatures &lt;- dtFeatures[grepl(“mean\(\)|std\(\)”, featureName)]</p>
+<p class="p2">#Convert the column numbers to a vector of variable names matching columns in dt.</p>
+<p class="p2">dtFeatures$featureCode &lt;- dtFeatures[, paste0(“V”, featureNum)] head(dtFeatures)</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>featureNum featureName featureCode</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>1: 1 tBodyAcc-mean()-X V1</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>2: 2 tBodyAcc-mean()-Y V2</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>3: 3 tBodyAcc-mean()-Z V3</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>4: 4 tBodyAcc-std()-X V4</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>5: 5 tBodyAcc-std()-Y V5</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>6: 6 tBodyAcc-std()-Z V6</b></h2>
+<p class="p2">dtFeatures$featureCode</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[1] “V1” “V2” “V3” “V4” “V5” “V6” “V41” “V42” “V43” “V44”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[11] “V45” “V46” “V81” “V82” “V83” “V84” “V85” “V86” “V121” “V122”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[21] “V123” “V124” “V125” “V126” “V161” “V162” “V163” “V164” “V165” “V166”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[31] “V201” “V202” “V214” “V215” “V227” “V228” “V240” “V241” “V253” “V254”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[41] “V266” “V267” “V268” “V269” “V270” “V271” “V345” “V346” “V347” “V348”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[51] “V349” “V350” “V424” “V425” “V426” “V427” “V428” “V429” “V503” “V504”</b></h2>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[61] “V516” “V517” “V529” “V530” “V542” “V543”</b></h2>
+<p class="p2">#Subset these variables using variable names.</p>
+<p class="p2">select &lt;- c(key(dt), dtFeatures$featureCode) dt &lt;- dt[, select, with = FALSE]</p>
+<p class="p2">#Use descriptive activity names</p>
+<p class="p2">#Read activity_labels.txt file. This will be used to add descriptive names to the activities.</p>
+<p class="p2">dtActivityNames &lt;- fread(file.path(pathIn, “activity_labels.txt”)) setnames(dtActivityNames, names(dtActivityNames), c(“activityNum”, “activityName”))</p>
+<p class="p2">#Label with descriptive activity names</p>
+<p class="p2">#Merge activity labels.</p>
+<p class="p2">dt &lt;- merge(dt, dtActivityNames, by = “activityNum”, all.x = TRUE)</p>
+<p class="p2">#Add activityName as a key.</p>
+<p class="p2">setkey(dt, subject, activityNum, activityName)</p>
+<p class="p2">#Melt the data table to reshape it from a short and wide format to a tall and narrow format.</p>
+<p class="p2">dt &lt;- data.table(melt(dt, key(dt), variable.name = “featureCode”))</p>
+<p class="p2">#Merge activity name.</p>
+<p class="p2">dt &lt;- merge(dt, dtFeatures[, list(featureNum, featureCode, featureName)], by = “featureCode”, all.x = TRUE)</p>
+<p class="p2">#Create a new variable, activity that is equivalent to activityName as a factor class. Create a new variable, feature that is equivalent to featureName as a factor #class.</p>
+<p class="p2">dt$activity &lt;- factor(dt$activityName) dt$feature &lt;- factor(dt$featureName)</p>
+<p class="p2">#Seperate features from featureName using the helper function grepthis.</p>
+<p class="p2">grepthis &lt;- function(regex) { grepl(regex, dt$feature) }</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>Features with 2 categories</b></h2>
+<p class="p2">n &lt;- 2 y &lt;- matrix(seq(1, n), nrow = n) x &lt;- matrix(c(grepthis(“<span class="s2"><sup>t”),</sup></span> grepthis(“<span class="s2"><sup>f”)),</sup></span> ncol = nrow(y)) dt$featDomain &lt;- factor(x %<i>% y, labels = c(“Time”, “Freq”)) x &lt;- matrix(c(grepthis(“Acc”), grepthis(“Gyro”)), ncol = nrow(y)) dt$featInstrument &lt;- factor(x %</i>% y, labels = c(“Accelerometer”, “Gyroscope”)) x &lt;- matrix(c(grepthis(“BodyAcc”), grepthis(“GravityAcc”)), ncol = nrow(y)) dt$featAcceleration &lt;- factor(x %<i>% y, labels = c(NA, “Body”, “Gravity”)) x &lt;- matrix(c(grepthis(“mean()”), grepthis(“std()”)), ncol = nrow(y)) dt$featVariable &lt;- factor(x %</i>% y, labels = c(“Mean”, “SD”))</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>Features with 1 category</b></h2>
+<p class="p2">dt$featJerk &lt;- factor(grepthis(“Jerk”), labels = c(NA, “Jerk”)) dt$featMagnitude &lt;- factor(grepthis(“Mag”), labels = c(NA, “Magnitude”))</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>Features with 3 categories</b></h2>
+<p class="p2">n &lt;- 3 y &lt;- matrix(seq(1, n), nrow = n) x &lt;- matrix(c(grepthis(“-X”), grepthis(“-Y”), grepthis(“-Z”)), ncol = nrow(y)) dt$featAxis &lt;- factor(x %*% y, labels = c(NA, “X”, “Y”, “Z”))</p>
+<p class="p2">#Check to make sure all possible combinations of feature are accounted for by all possible combinations of the factor class variables.</p>
+<p class="p2">r1 &lt;- nrow(dt[, .N, by = c(“feature”)]) r2 &lt;- nrow(dt[, .N, by = c(“featDomain”, “featAcceleration”, “featInstrument”, “featJerk”, “featMagnitude”, “featVariable”, “featAxis”)]) r1 == r2</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[1] TRUE</b></h2>
+<p class="p2">#Yes, I accounted for all possible combinations. feature is now redundant. #Create a tidy data set</p>
+<p class="p2">#Create a data set with the average of each variable for each activity and each subject. setkey(dt, subject, activity, featDomain, featAcceleration, featInstrument, featJerk, featMagnitude, featVariable, featAxis) dtTidy &lt;- dt[, list(count = .N, average = mean(value)), by = key(dt)]</p>
+<p class="p2">#Make codebook.</p>
+<p class="p2">knit(“makeCodebook.Rmd”, output = “codebook.md”, encoding = “ISO8859-1”, quiet = TRUE)</p>
+<h2 style="margin: 0.0px 0.0px 19.4px 0.0px; line-height: 20.0px; font: 23.0px Helvetica"><b>[1] “codebook.md”</b></h2>
+<p class="p2">markdownToHTML(“codebook.md”, “codebook.html”)</p>
+</body>
+</html>
